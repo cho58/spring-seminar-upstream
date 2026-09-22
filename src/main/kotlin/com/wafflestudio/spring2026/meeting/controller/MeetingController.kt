@@ -2,11 +2,14 @@ package com.wafflestudio.spring2026.meeting.controller
 
 import com.wafflestudio.spring2026.meeting.dto.MeetingCreateRequest
 import com.wafflestudio.spring2026.meeting.dto.MeetingResponse
+import com.wafflestudio.spring2026.meeting.dto.MeetingUpdateRequest
 import com.wafflestudio.spring2026.meeting.service.MeetingService
 import jakarta.validation.Valid
 import java.net.URI
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -43,5 +46,27 @@ class MeetingController(
         return ResponseEntity.ok(
             MeetingResponse.from(meeting),
         )
+    }
+
+    @GetMapping
+    fun getMeetings(): List<MeetingResponse> =
+        meetingService.getMeetings()
+            .map(MeetingResponse::from)
+
+    @PatchMapping("/{id}")
+    fun updateMeeting(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: MeetingUpdateRequest,
+    ): MeetingResponse {
+        val meeting = meetingService.updateMeeting(id, request)
+        return MeetingResponse.from(meeting)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteMeeting(
+        @PathVariable id: Long,
+    ): ResponseEntity<Void> {
+        meetingService.deleteMeeting(id)
+        return ResponseEntity.noContent().build()
     }
 }

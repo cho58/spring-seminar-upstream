@@ -26,4 +26,16 @@ class MeetingRepository {
     }
 
     fun findById(id: Long): Meeting? = meetings[id]
+
+    fun findAll(): List<Meeting> =
+        meetings.values.toList()
+
+    fun update(meeting: Meeting): Meeting {
+        meetings[meeting.id] = meeting
+        return meeting
+    }
+
+    fun deleteById(id: Long) {
+        meetings.remove(id)
+    }
 }

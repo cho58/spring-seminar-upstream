@@ -1,6 +1,7 @@
 package com.wafflestudio.spring2026.meeting.service
 
 import com.wafflestudio.spring2026.meeting.MeetingNotFoundException
+import com.wafflestudio.spring2026.meeting.dto.MeetingUpdateRequest
 import com.wafflestudio.spring2026.meeting.model.Meeting
 import com.wafflestudio.spring2026.meeting.repository.MeetingRepository
 import org.springframework.stereotype.Service
@@ -21,4 +22,27 @@ class MeetingService(
     fun getMeeting(id: Long): Meeting =
         meetingRepository.findById(id)
             ?: throw MeetingNotFoundException(id)
+
+    fun getMeetings(): List<Meeting> =
+        meetingRepository.findAll()
+
+    fun updateMeeting(
+        id: Long,
+        request: MeetingUpdateRequest,
+    ): Meeting {
+        val meeting = getMeeting(id)
+
+        val updatedMeeting = Meeting(
+            id = meeting.id,
+            title = request.title ?: meeting.title,
+            capacity = request.capacity ?: meeting.capacity,
+        )
+
+        return meetingRepository.update(updatedMeeting)
+    }
+
+    fun deleteMeeting(id: Long) {
+        getMeeting(id)
+        meetingRepository.deleteById(id)
+    }
 }
